@@ -1,8 +1,13 @@
 import express from 'express'
 import SubjectsRouter from './routes/Subjects.js'
 import cors from 'cors'
+import { error } from 'node:console'
 const app = express()
 const PORT = 8000
+
+if (!process.env.FRONTEND_URL) {
+  throw new error('Frontend URL i not set in profile')
+}
 
 app.use(cors({
   origin: process.env.FRONTEND_URL,

@@ -14,8 +14,10 @@ router.get('/', async(req,res) => {
         const {search, department, page = 1, limit=10} = req.query
 
         // Normalize page and limit to numeric values and ensure minimum of 1.
-        const currentPage = Math.max(1, +page)
-        const limitPerPage = Math.max(1, +limit)
+        const parsedPage = Number(page)
+        const parsedLimit = Number(limit)
+        const currentPage = Math.max(1, Number.isFinite(parsedPage) ? parsedPage : 1)
+        const limitPerPage = Math.max(1, Number.isFinite(parsedLimit) ? parsedLimit : 10)
 
         const offset = (currentPage - 1) * limitPerPage
 
@@ -25,15 +27,14 @@ router.get('/', async(req,res) => {
         if (search) {
             filterConditions.push(
                 or(
-                    ilike(subjects.name, '%${search}%'),
-                    ilike(subjects.code, '%${search}%')
+                    ilike(subjects.name, `%${search}%`),
+                    ilike(subjects.code, `%${search}%`)
                 )
             );
         }
-
         // if department filter exists, match department name
         if (department) {
-            filterConditions.push(ilike(departments.name, '%${department}%'))
+            filterConditions.push(ilike(departments.name, `%${department}%`))
         }
 
 
