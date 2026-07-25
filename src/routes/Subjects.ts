@@ -9,6 +9,10 @@ const router = express.Router();
 // GET ALL SUBJECTS WITH OPTIONAL SEARCH, FILTERING AND PAGINATION
 router.get('/', async(req,res) => {
     try {
+        if (!db) {
+            return res.status(503).json({ error: 'Database is not available' });
+        }
+
         // Extract optional query parameters from the request.
         // Defaults are used if page or limit are not provided.
         const {search, department, page = 1, limit=10} = req.query
