@@ -2,9 +2,11 @@ import 'dotenv/config';
 import { drizzle } from 'drizzle-orm/neon-http';
 import { neon } from '@neondatabase/serverless';
 
-if (!process.env.DATABASE_URL) {
-  throw new Error('DATABASE_URL is not defined');
+const databaseUrl = process.env.DATABASE_URL;
+
+if (!databaseUrl) {
+  console.warn('DATABASE_URL is not defined. Set it in your environment to enable database queries.');
 }
 
-const sql = neon(process.env.DATABASE_URL);
-export const db = drizzle(sql);
+const sql = databaseUrl ? neon(databaseUrl) : null;
+export const db = sql ? drizzle(sql) : null;
